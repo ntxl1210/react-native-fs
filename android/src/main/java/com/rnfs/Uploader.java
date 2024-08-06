@@ -122,7 +122,7 @@ public class Uploader extends AsyncTask<UploadParams, int[], UploadResult> {
             }
             if (!binaryStreamOnly) {
                 long requestLength = totalFileLength;
-                requestLength += stringData.getBytes().length + files.length * crlf.getBytes().length;
+                requestLength += stringData.getBytes("UTF-8").length + files.length * crlf.getBytes("UTF-8").length;
                 connection.setRequestProperty("Content-length", "" +(int) requestLength);
                 connection.setFixedLengthStreamingMode((int)requestLength);
             }
@@ -132,14 +132,14 @@ public class Uploader extends AsyncTask<UploadParams, int[], UploadResult> {
             WritableByteChannel requestChannel = Channels.newChannel(request);
 
             if (!binaryStreamOnly) {
-                request.write(metaData.getBytes());
+                request.write(metaData.getBytes("UTF-8"));
             }
 
             byteSentTotal = 0;
 
             for (ReadableMap map : params.files) {
                 if (!binaryStreamOnly) {
-                    request.write(fileHeader[fileCount].getBytes());
+                    request.write(fileHeader[fileCount].getBytes("UTF-8"));
                 }
 
                 File file = new File(map.getString("filepath"));
@@ -162,7 +162,7 @@ public class Uploader extends AsyncTask<UploadParams, int[], UploadResult> {
                 }
 
                 if (!binaryStreamOnly) {
-                    request.write(crlf.getBytes());
+                    request.write(crlf.getBytes("UTF-8"));
                 }
 
                 fileCount++;
@@ -170,7 +170,7 @@ public class Uploader extends AsyncTask<UploadParams, int[], UploadResult> {
             }
 
             if (!binaryStreamOnly) {
-                request.write(tail.getBytes());
+                request.write(tail.getBytes("UTF-8"));
             }
             request.flush();
             request.close();
